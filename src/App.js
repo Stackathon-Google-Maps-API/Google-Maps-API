@@ -5,6 +5,7 @@ import { GoogleMap, withScriptjs, withGoogleMap, Marker, InfoWindow } from "reac
 // import * as parksData from "./data/skateboard-parks.json";
 import * as airportsData from "./data/airports.json";
 
+
 import mapStyles from "./mapStyles";
 
   function Map() {
@@ -44,6 +45,7 @@ import mapStyles from "./mapStyles";
     <div>
     <h2>{selectedPark.name}</h2>
     <p>{selectedPark.features.DESCRIPTIO}</p>
+
     </div>
     </InfoWindow>
 )}
