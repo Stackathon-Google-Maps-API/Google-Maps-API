@@ -55,9 +55,14 @@ import mapStyles from "./mapStyles";
       />
       ))}
 
-      {selectedDest ? (<InfoWindow position={{lat: selectedDest.lat, lng: selectedDest.lng}}>
+      {selectedDest ? (<InfoWindow 
+      position={{lat: selectedDest.lat, lng: selectedDest.lng}}
+      onCloseClick={() => {
+        setSelectedDest(null)
+      }}
+      >
         <div>
-          <h2>I want to travel here!</h2>
+          <h2>I want to travel to here!</h2>
         </div>
         </InfoWindow>) : null}
 
