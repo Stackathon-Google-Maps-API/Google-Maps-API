@@ -1,97 +1,74 @@
 import React, { useState } from "react";
-//importing googlemaps
-//embedd google script so app can run properly
 import { GoogleMap, withScriptjs, withGoogleMap, Marker, InfoWindow } from "react-google-maps";
-// import * as parksData from "./data/skateboard-parks.json";
-// import * as airportsData from "./data/airports.json";
 import * as countriesData from "./data/countries.json";
-// import * as countriesData from './data/singlecountry.json';
 import mapStyles from "./mapStyles";
 
-// const countryFlags = countriesData.features[0].flags;
+function Map() {
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [markers, setMarkers] = React.useState([]);
+  const [selectedDest, setSelectedDest] = React.useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredCountries, setFilteredCountries] = useState(countriesData.features);
 
-  function Map() {
-    //default zoom of initial map when app loads and coordates
-    const [selectedCountry, setSelectedCountry] = useState(null);
-    const [markers, setMarkers] = React.useState([]);
-    const [selectedDest, setSelectedDest] = React.useState(null);
+  const onMapClick = React.useCallback((event) => {
+    setMarkers(current => [...current, {
+      lat: event.latLng.lat(),
+      lng: event.latLng.lng(),
+      time: new Date()
+    }]);
+  }, []);
 
-    const onMapClick = React.useCallback((event) => {
-      setMarkers(current => [...current,
-      {
-        lat: event.latLng.lat(),
-        lng: event.latLng.lng(),
-        time: new Date()
-      },
-    ])
-    }, []);
+  const mapRef = React.useRef();
+  const onMapLoad = React.useCallback((map) => {
+    mapRef.current = map;
+  }, []);
 
-    const mapRef = React.useRef();
-    const onMapLoad = React.useCallback((map) => {
-     mapRef.current = map;
-    }, [])
+  // Function to filter countries based on the search query
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    const filteredCountries = countriesData.features.filter(country =>
+      country.name.common.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredCountries(filteredCountries);
+  };
 
-    return (
+  return (
     <GoogleMap 
-    defaultZoom={12} 
-    defaultCenter={{lat: 41.14961, lng: -8.61099}} defaultOptions={{styles: mapStyles}}
-    onClick={onMapClick}
-    onLoad={onMapLoad}
+      defaultZoom={12} 
+      defaultCenter={{lat: 41.14961, lng: -8.61099}} 
+      defaultOptions={{styles: mapStyles}}
+      onClick={onMapClick}
+      onLoad={onMapLoad}
     >
-      {markers.map((marker) => (
-      <Marker 
-      key={marker.time.toISOString()} 
-      position={{lat: marker.lat, lng: marker.lng}}
-      icon={{
-        url: '/airplane.png',
-        scaledSize: new window.google.maps.Size(50,50),
-        origin: new window.google.maps.Point(0,0),
-        anchor: new window.google.maps.Point(15,15)
+      {/* ...Markers and InfoWindows code... */}
+      
+      {/* Search Bar */}
+      <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 1 }}>
+        <input
+          type="text"
+          placeholder="Search for a country..."
+          value={searchQuery}
+          onChange={(e) => handleSearch(e.target.value)} // Call the search function when the input changes
+        />
+      </div>
 
-      }} 
-      onClick={() => {
-        setSelectedDest(marker)
-      }}
-      />
+      {/* Render filtered countries */}
+      {filteredCountries.map(country => (
+        <Marker
+          key={country.area}
+          position={{
+            lat: country.latlng[0],
+            lng: country.latlng[1]
+          }}
+          onClick={() => {
+            setSelectedCountry(country);
+          }}
+          icon={{
+            url: country.flags.png,
+            scaledSize: new window.google.maps.Size(25, 25),
+          }}
+        />
       ))}
-
-      {selectedDest ? (<InfoWindow 
-      position={{lat: selectedDest.lat, lng: selectedDest.lng}}
-      onCloseClick={() => {
-        setSelectedDest(null)
-      }}
-      >
-        <div>
-          <h2>I want to travel to here!</h2>
-        </div>
-        </InfoWindow>) : null}
-
-
-    {/* embed marker into google maps data using skateboard-parks.json file */}
-    {countriesData.features.map(country =>(
-    <Marker
-    key={country.area}
-    position={{
-      lat: country.latlng[0],
-      lng: country.latlng[1]
-    }}
-    onClick = {() => {
-      setSelectedCountry(country);
-    }}
-    // icon={{
-    //   url: '/skateboarding.svg',
-    //   scaledSize: new window.google.maps.Size(25,25)
-    //  }}
-    // icon={{
-    //   url: countryFlags.png, // Use the PNG version of the flag
-    //   scaledSize: new window.google.maps.Size(25, 25),
-    // }}
-    icon={{
-      url: country.flags.png, // Use the PNG version of the flag
-      scaledSize: new window.google.maps.Size(25, 25),
-    }}
-    />
-    ))}
 
      {selectedCountry &&  (
      <InfoWindow
