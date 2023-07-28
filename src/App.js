@@ -6,15 +6,15 @@ import { GoogleMap, withScriptjs, withGoogleMap, Marker, InfoWindow } from "reac
 // import * as airportsData from "./data/airports.json";
 import * as countriesData from "./data/countries.json";
 // import * as countriesData from './data/singlecountry.json';
-
-
 import mapStyles from "./mapStyles";
+
+// const countryFlags = countriesData.features[0].flags;
 
   function Map() {
     //default zoom of initial map when app loads and coordates
-    const [selectedPark, setSelectedPark] = useState(null);
+    const [selectedCountry, setSelectedCountry] = useState(null);
     return (
-    <GoogleMap defaultZoom={10} defaultCenter={{lat: 41.14961, lng: -8.61099}} defaultOptions={{styles: mapStyles}}
+    <GoogleMap defaultZoom={12} defaultCenter={{lat: 41.14961, lng: -8.61099}} defaultOptions={{styles: mapStyles}}
     >
     {/* embed marker into google maps data using skateboard-parks.json file */}
     {countriesData.features.map(country =>(
@@ -25,28 +25,39 @@ import mapStyles from "./mapStyles";
       lng: country.latlng[1]
     }}
     onClick = {() => {
-      setSelectedPark(country);
+      setSelectedCountry(country);
     }}
+    // icon={{
+    //   url: '/skateboarding.svg',
+    //   scaledSize: new window.google.maps.Size(25,25)
+    //  }}
+    // icon={{
+    //   url: countryFlags.png, // Use the PNG version of the flag
+    //   scaledSize: new window.google.maps.Size(25, 25),
+    // }}
     icon={{
-      url: '/skateboarding.svg',
-      scaledSize: new window.google.maps.Size(25,25)
-     }}
+      url: country.flags.png, // Use the PNG version of the flag
+      scaledSize: new window.google.maps.Size(25, 25),
+    }}
     />
     ))}
 
-     {selectedPark &&  (
+     {selectedCountry &&  (
      <InfoWindow
       position={{
-        lat: selectedPark.latlng[0],
-        lng: selectedPark.latlng[1],
+        lat: selectedCountry.latlng[0],
+        lng: selectedCountry.latlng[1],
      }}
      onCloseClick={() => {
-      setSelectedPark(null);
+      setSelectedCountry(null);
      }}
   >
     <div>
-    <h2>{selectedPark.name.common}</h2>
-    <p>Population: {selectedPark.population}</p>
+    <h2>{selectedCountry.name.common}</h2>
+    <p>Capital: {selectedCountry.capital}</p>
+    <p>Languages: {Object.values(selectedCountry.languages).join(", ")}</p>
+    <p>Currencies: {Object.values(selectedCountry.currencies).map(currency => currency.name).join(", ")}</p>
+    <p>Time zone: {selectedCountry.timezones}</p>
 
     </div>
     </InfoWindow>
