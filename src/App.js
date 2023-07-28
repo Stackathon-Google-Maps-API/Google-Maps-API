@@ -3,8 +3,9 @@ import React, { useState } from "react";
 //embedd google script so app can run properly
 import { GoogleMap, withScriptjs, withGoogleMap, Marker, InfoWindow } from "react-google-maps";
 // import * as parksData from "./data/skateboard-parks.json";
-import * as airportsData from "./data/airports.json";
+// import * as airportsData from "./data/airports.json";
 import * as countriesData from "./data/countries.json";
+// import * as countriesData from './data/singlecountry.json';
 
 
 import mapStyles from "./mapStyles";
@@ -16,15 +17,15 @@ import mapStyles from "./mapStyles";
     <GoogleMap defaultZoom={10} defaultCenter={{lat: 41.14961, lng: -8.61099}} defaultOptions={{styles: mapStyles}}
     >
     {/* embed marker into google maps data using skateboard-parks.json file */}
-    {airportsData.features.map(airport =>(
+    {countriesData.features.map(country =>(
     <Marker
-    key={airport.AIRPORT_ID}
+    key={country.area}
     position={{
-      lat: airport.latitude,
-      lng: airport.longitude
+      lat: country.latlng[0],
+      lng: country.latlng[1]
     }}
     onClick = {() => {
-      setSelectedPark(airport);
+      setSelectedPark(country);
     }}
     icon={{
       url: '/skateboarding.svg',
@@ -36,16 +37,16 @@ import mapStyles from "./mapStyles";
      {selectedPark &&  (
      <InfoWindow
       position={{
-      lat: selectedPark.latitude,
-      lng: selectedPark.longitude
+        lat: selectedPark.latlng[0],
+        lng: selectedPark.latlng[1],
      }}
      onCloseClick={() => {
       setSelectedPark(null);
      }}
   >
     <div>
-    <h2>{selectedPark.name}</h2>
-    {/* <p>{selectedPark.features.DESCRIPTIO}</p> */}
+    <h2>{selectedPark.name.common}</h2>
+    <p>Population: {selectedPark.population}</p>
 
     </div>
     </InfoWindow>

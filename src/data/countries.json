@@ -1,4 +1,5 @@
-[
+{
+    "features": [
     {
     "name": {
     "common": "American Samoa",
@@ -53040,3 +53041,4 @@
     }
     }
     ]
+}
