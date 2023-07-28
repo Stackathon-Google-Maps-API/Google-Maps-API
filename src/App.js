@@ -40,6 +40,37 @@ function Map() {
       onClick={onMapClick}
       onLoad={onMapLoad}
     >
+            {markers.map((marker) => (
+      <Marker 
+      key={marker.time.toISOString()} 
+      position={{lat: marker.lat, lng: marker.lng}}
+      icon={{
+        url: '/airplane.png',
+        scaledSize: new window.google.maps.Size(50,50),
+        origin: new window.google.maps.Point(0,0),
+        anchor: new window.google.maps.Point(15,15)
+
+      }} 
+      onClick={() => {
+        setSelectedDest(marker)
+      }}
+      />
+      ))}
+
+      {selectedDest ? (<InfoWindow position={{lat: selectedDest.lat, lng: selectedDest.lng}}
+      onCloseClick={() => {
+        setSelectedDest(null)
+      }}
+      >
+        <div>
+          <h2>I want to travel here!</h2>
+        </div>
+        </InfoWindow>) : null}
+
+
+
+
+
       {/* ...Markers and InfoWindows code... */}
       
       {/* Search Bar */}
@@ -69,6 +100,7 @@ function Map() {
           }}
         />
       ))}
+
 
      {selectedCountry &&  (
      <InfoWindow
