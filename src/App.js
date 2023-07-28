@@ -14,7 +14,7 @@ const countryFlags = countriesData.features[0].flags;
     //default zoom of initial map when app loads and coordates
     const [selectedPark, setSelectedPark] = useState(null);
     return (
-    <GoogleMap defaultZoom={10} defaultCenter={{lat: 41.14961, lng: -8.61099}} defaultOptions={{styles: mapStyles}}
+    <GoogleMap defaultZoom={12} defaultCenter={{lat: 41.14961, lng: -8.61099}} defaultOptions={{styles: mapStyles}}
     >
     {/* embed marker into google maps data using skateboard-parks.json file */}
     {countriesData.features.map(country =>(
@@ -54,9 +54,10 @@ const countryFlags = countriesData.features[0].flags;
   >
     <div>
     <h2>{selectedPark.name.common}</h2>
+    <p>Capital: {selectedPark.capital}</p>
     <p>Languages: {Object.values(selectedPark.languages).join(", ")}</p>
     <p>Currencies: {Object.values(selectedPark.currencies).map(currency => currency.name).join(", ")}</p>
-    <p>Population: {selectedPark.population}</p>
+    <p>Timezone: {selectedPark.timezones}</p>
 
     </div>
     </InfoWindow>
