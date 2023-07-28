@@ -13,9 +13,55 @@ import mapStyles from "./mapStyles";
   function Map() {
     //default zoom of initial map when app loads and coordates
     const [selectedCountry, setSelectedCountry] = useState(null);
+    const [markers, setMarkers] = React.useState([]);
+    const [selectedDest, setSelectedDest] = React.useState(null);
+
+    const onMapClick = React.useCallback((event) => {
+      setMarkers(current => [...current,
+      {
+        lat: event.latLng.lat(),
+        lng: event.latLng.lng(),
+        time: new Date()
+      },
+    ])
+    }, []);
+
+    const mapRef = React.useRef();
+    const onMapLoad = React.useCallback((map) => {
+     mapRef.current = map;
+    }, [])
+
     return (
-    <GoogleMap defaultZoom={12} defaultCenter={{lat: 41.14961, lng: -8.61099}} defaultOptions={{styles: mapStyles}}
+    <GoogleMap 
+    defaultZoom={12} 
+    defaultCenter={{lat: 41.14961, lng: -8.61099}} defaultOptions={{styles: mapStyles}}
+    onClick={onMapClick}
+    onLoad={onMapLoad}
     >
+      {markers.map((marker) => (
+      <Marker 
+      key={marker.time.toISOString()} 
+      position={{lat: marker.lat, lng: marker.lng}}
+      icon={{
+        url: '/airplane.png',
+        scaledSize: new window.google.maps.Size(50,50),
+        origin: new window.google.maps.Point(0,0),
+        anchor: new window.google.maps.Point(15,15)
+
+      }} 
+      onClick={() => {
+        setSelectedDest(marker)
+      }}
+      />
+      ))}
+
+      {selectedDest ? (<InfoWindow position={{lat: selectedDest.lat, lng: selectedDest.lng}}>
+        <div>
+          <h2>I want to travel here!</h2>
+        </div>
+        </InfoWindow>) : null}
+
+
     {/* embed marker into google maps data using skateboard-parks.json file */}
     {countriesData.features.map(country =>(
     <Marker
