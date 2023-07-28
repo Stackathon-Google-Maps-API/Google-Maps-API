@@ -6,9 +6,9 @@ import { GoogleMap, withScriptjs, withGoogleMap, Marker, InfoWindow } from "reac
 // import * as airportsData from "./data/airports.json";
 import * as countriesData from "./data/countries.json";
 // import * as countriesData from './data/singlecountry.json';
-
-
 import mapStyles from "./mapStyles";
+
+const countryFlags = countriesData.features[0].flags;
 
   function Map() {
     //default zoom of initial map when app loads and coordates
@@ -27,10 +27,18 @@ import mapStyles from "./mapStyles";
     onClick = {() => {
       setSelectedPark(country);
     }}
+    // icon={{
+    //   url: '/skateboarding.svg',
+    //   scaledSize: new window.google.maps.Size(25,25)
+    //  }}
+    // icon={{
+    //   url: countryFlags.png, // Use the PNG version of the flag
+    //   scaledSize: new window.google.maps.Size(25, 25),
+    // }}
     icon={{
-      url: '/skateboarding.svg',
-      scaledSize: new window.google.maps.Size(25,25)
-     }}
+      url: country.flags.png, // Use the PNG version of the flag
+      scaledSize: new window.google.maps.Size(25, 25),
+    }}
     />
     ))}
 
@@ -46,6 +54,8 @@ import mapStyles from "./mapStyles";
   >
     <div>
     <h2>{selectedPark.name.common}</h2>
+    <p>Languages: {Object.values(selectedPark.languages).join(", ")}</p>
+    <p>Currencies: {Object.values(selectedPark.currencies).map(currency => currency.name).join(", ")}</p>
     <p>Population: {selectedPark.population}</p>
 
     </div>
