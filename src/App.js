@@ -8,11 +8,11 @@ import * as countriesData from "./data/countries.json";
 // import * as countriesData from './data/singlecountry.json';
 import mapStyles from "./mapStyles";
 
-const countryFlags = countriesData.features[0].flags;
+// const countryFlags = countriesData.features[0].flags;
 
   function Map() {
     //default zoom of initial map when app loads and coordates
-    const [selectedPark, setSelectedPark] = useState(null);
+    const [selectedCountry, setSelectedCountry] = useState(null);
     return (
     <GoogleMap defaultZoom={12} defaultCenter={{lat: 41.14961, lng: -8.61099}} defaultOptions={{styles: mapStyles}}
     >
@@ -25,7 +25,7 @@ const countryFlags = countriesData.features[0].flags;
       lng: country.latlng[1]
     }}
     onClick = {() => {
-      setSelectedPark(country);
+      setSelectedCountry(country);
     }}
     // icon={{
     //   url: '/skateboarding.svg',
@@ -42,22 +42,22 @@ const countryFlags = countriesData.features[0].flags;
     />
     ))}
 
-     {selectedPark &&  (
+     {selectedCountry &&  (
      <InfoWindow
       position={{
-        lat: selectedPark.latlng[0],
-        lng: selectedPark.latlng[1],
+        lat: selectedCountry.latlng[0],
+        lng: selectedCountry.latlng[1],
      }}
      onCloseClick={() => {
-      setSelectedPark(null);
+      setSelectedCountry(null);
      }}
   >
     <div>
-    <h2>{selectedPark.name.common}</h2>
-    <p>Capital: {selectedPark.capital}</p>
-    <p>Languages: {Object.values(selectedPark.languages).join(", ")}</p>
-    <p>Currencies: {Object.values(selectedPark.currencies).map(currency => currency.name).join(", ")}</p>
-    <p>Timezone: {selectedPark.timezones}</p>
+    <h2>{selectedCountry.name.common}</h2>
+    <p>Capital: {selectedCountry.capital}</p>
+    <p>Languages: {Object.values(selectedCountry.languages).join(", ")}</p>
+    <p>Currencies: {Object.values(selectedCountry.currencies).map(currency => currency.name).join(", ")}</p>
+    <p>Time zone: {selectedCountry.timezones}</p>
 
     </div>
     </InfoWindow>
