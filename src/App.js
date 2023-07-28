@@ -8,7 +8,7 @@ function Map() {
   const [markers, setMarkers] = React.useState([]);
   const [selectedDest, setSelectedDest] = React.useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredCountries, setFilteredCountries] = useState(countriesData.features);
+  const [filteredCountries, setFilteredCountries] = useState(countriesData.info);
 
   const onMapClick = React.useCallback((event) => {
     setMarkers(current => [...current, {
@@ -26,60 +26,54 @@ function Map() {
   // Function to filter countries based on the search query
   const handleSearch = (query) => {
     setSearchQuery(query);
-    const filteredCountries = countriesData.features.filter(country =>
+    const filteredCountries = countriesData.info.filter(country =>
       country.name.common.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredCountries(filteredCountries);
   };
 
   return (
-    <GoogleMap 
-      defaultZoom={12} 
-      defaultCenter={{lat: 41.14961, lng: -8.61099}} 
-      defaultOptions={{styles: mapStyles}}
+    <GoogleMap
+      defaultZoom={12}
+      defaultCenter={{ lat: 41.14961, lng: -8.61099 }}
+      defaultOptions={{ styles: mapStyles }}
       onClick={onMapClick}
       onLoad={onMapLoad}
     >
-            {markers.map((marker) => (
-      <Marker 
-      key={marker.time.toISOString()} 
-      position={{lat: marker.lat, lng: marker.lng}}
-      icon={{
-        url: '/airplane.png',
-        scaledSize: new window.google.maps.Size(50,50),
-        origin: new window.google.maps.Point(0,0),
-        anchor: new window.google.maps.Point(15,15)
-
-      }} 
-      onClick={() => {
-        setSelectedDest(marker)
-      }}
-      />
+      {markers.map((marker) => (
+        <Marker
+          key={marker.time.toISOString()}
+          position={{ lat: marker.lat, lng: marker.lng }}
+          icon={{
+            url: '/airplane.png',
+            scaledSize: new window.google.maps.Size(50, 50),
+            origin: new window.google.maps.Point(0, 0),
+            anchor: new window.google.maps.Point(15, 15)
+          }}
+          onClick={() => {
+            setSelectedDest(marker)
+          }}
+        />
       ))}
 
-      {selectedDest ? (<InfoWindow position={{lat: selectedDest.lat, lng: selectedDest.lng}}
-      onCloseClick={() => {
-        setSelectedDest(null)
-      }}
+      {selectedDest ? (<InfoWindow position={{ lat: selectedDest.lat, lng: selectedDest.lng }}
+        onCloseClick={() => {
+          setSelectedDest(null)
+        }}
       >
         <div>
           <h2>I want to travel here!</h2>
         </div>
-        </InfoWindow>) : null}
+      </InfoWindow>) : null}
 
-
-
-
-
-      {/* ...Markers and InfoWindows code... */}
-      
       {/* Search Bar */}
-      <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 1 }}>
+      <div className="searchBarContainer">
         <input
           type="text"
           placeholder="Search for a country..."
           value={searchQuery}
-          onChange={(e) => handleSearch(e.target.value)} // Call the search function when the input changes
+          onChange={(e) => handleSearch(e.target.value)}
+          className="searchBarField"
         />
       </div>
 
@@ -101,45 +95,43 @@ function Map() {
         />
       ))}
 
-
-     {selectedCountry &&  (
-     <InfoWindow
-      position={{
-        lat: selectedCountry.latlng[0],
-        lng: selectedCountry.latlng[1],
-     }}
-     onCloseClick={() => {
-      setSelectedCountry(null);
-     }}
-  >
-    <div>
-    <h2>{selectedCountry.name.common}</h2>
-    <p>Capital: {selectedCountry.capital}</p>
-    <p>Languages: {Object.values(selectedCountry.languages).join(", ")}</p>
-    <p>Currencies: {Object.values(selectedCountry.currencies).map(currency => currency.name).join(", ")}</p>
-    <p>Time zone: {selectedCountry.timezones}</p>
-
-    </div>
-    </InfoWindow>
-)}
+      {selectedCountry && (
+        <InfoWindow
+          position={{
+            lat: selectedCountry.latlng[0],
+            lng: selectedCountry.latlng[1],
+          }}
+          onCloseClick={() => {
+            setSelectedCountry(null);
+          }}
+        >
+          <div>
+            <h2>{selectedCountry.name.common}</h2>
+            <p>Capital: {selectedCountry.capital}</p>
+            <p>Languages: {Object.values(selectedCountry.languages).join(", ")}</p>
+            <p>Currencies: {Object.values(selectedCountry.currencies).map(currency => currency.name).join(", ")}</p>
+            <p>Time zones: {Object.values(selectedCountry.timezones).join(", ")}</p>
+          </div>
+        </InfoWindow>
+      )}
     </GoogleMap>
-    );
-  }
+  );
+}
 
-  const WrappedMap = withScriptjs(withGoogleMap(Map))
+const WrappedMap = withScriptjs(withGoogleMap(Map))
 
-  export default function App() {
-    return (
-      //map takes up the entire sreen with w/h setting
-    <div style={{width: '100vw', height: '100vh'}}>
+export default function App() {
+  return (
+    //map takes up the entire sreen with w/h settings
+    <div style={{ width: '100vw', height: '100vh' }}>
       {/* loads higher component "withScripts(withGoogleMap)" */}
       <WrappedMap
-      googleMapURL={`http://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=AIzaSyDLIu9k9AhmQzJMKSCBS1l0lRZae5pIzmQ`}
-        //  these three props is how we want the map to be displayed inside the div when the map renders
-      loadingElement={<div style={{height:"100%"}}/>}
-      containerElement={<div style={{height:"100%"}}/>}
-      mapElement={<div style={{height:"100%"}}/>}
+        googleMapURL={`http://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=AIzaSyDLIu9k9AhmQzJMKSCBS1l0lRZae5pIzmQ`}
+        //  these three props are how we want the map to be displayed inside the div when the map renders
+        loadingElement={<div style={{ height: "100%" }} />}
+        containerElement={<div style={{ height: "100%" }} />}
+        mapElement={<div style={{ height: "100%" }} />}
       />
     </div>
-    )
-  }
+  )
+}
